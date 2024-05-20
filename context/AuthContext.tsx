@@ -13,8 +13,10 @@ export function AuthProvider({children}:React.PropsWithChildren) {
   const rootSegment = useSegments()[0];
   const router = useRouter(); // nos permite navegar entre paginas
   const [user, setUser] = React.useState<string | undefined>("");
-  const [userUid, setUserUid] = React.useState<string | undefined>("")
-  
+  const [userUid, setUserUid] = React.useState<string | undefined>("");
+  const [username, setUsername] = React.useState<string | undefined>("");
+  const [userImg, setUserImg] = React.useState<string | undefined>("");
+
   // usar un useEffect para revisar si tenemos un usuario al cargar la pagina por primera vez
   React.useEffect(() => {
     // si no hay un usuario no tenemos que hacer nada
@@ -34,9 +36,11 @@ export function AuthProvider({children}:React.PropsWithChildren) {
     <AuthContext.Provider
       value={{
         user: user,
-        signIn: (correo:string, userUid:string) => {
-          setUser(correo);
-          setUserUid(userUid)
+        signIn: (userUid:string, userFirestore:object) => {
+          setUser(userFirestore.email);
+          setUserUid(userUid);
+          setUserImg(userFirestore.profileUrl);
+          setUsername(userFirestore.username);
         },
         signOut: () => {
           // funcion para eliminar la sesion del usuario
@@ -48,6 +52,12 @@ export function AuthProvider({children}:React.PropsWithChildren) {
         },
         getCurrentUserUid: () => {
           return userUid;
+        },
+        getCurrenUsername: () => {
+          return username;
+        },
+        getCurrentUserImage: () => {
+          return userImg;
         }
       }}
     >

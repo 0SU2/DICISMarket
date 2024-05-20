@@ -1,70 +1,54 @@
-import { View, Pressable, StyleSheet, ScrollView, Text, TouchableOpacity } from 'react-native'
-import React, { useEffect } from 'react'
-import { Link } from 'expo-router'
-import { Ionicons } from '@expo/vector-icons'
-import { FIRESTORE_DB } from '@/context/firebase/FirebaseConfig'
-import { DocumentData, addDoc, collection, onSnapshot, orderBy, query, serverTimestamp } from 'firebase/firestore'
+import { View, StyleSheet } from 'react-native'
+import * as React from 'react'
+import { usersRef } from '@/context/firebase/FirebaseConfig'
+import { DocumentData, getDocs, query, where } from 'firebase/firestore'
 import { useAuth } from '@/context/AuthContext'
 import Spinner from 'react-native-loading-spinner-overlay'
+import ChatList from '@/context/ChatList'
 
 export default function ProfileTab() {
-  const [ groupsCollectionRef, setGroupsCollectionRef ] = React.useState<DocumentData>();
-  const [ groups, setGroups ] = React.useState([]);
+  const [ users, setUsers ] = React.useState<DocumentData>([]);
   const [ loading, setLoading ] = React.useState(false);
   const { getCurrentUserUid } = useAuth();
   const userUid = getCurrentUserUid();
 
   React.useEffect(() => {
-    const ref = collection(FIRESTORE_DB, 'groups');
-    const q = query(ref, orderBy('dateCreated', 'asc'));
-    setGroupsCollectionRef(ref);
-    const unsuscribe = onSnapshot(q, (groups: DocumentData) => {
-      
-      const groupsData = groups.docs.map((doc: DocumentData) => {
-        return { id: doc.id, ...doc.data() };
-      })
-      console.log("Current groups in database: ", groupsData);
-      setGroups(groupsData);
-    });
-    return unsuscribe;
+    // return unsuscribe;
+    if(userUid) {
+      getUsers();
+    }
   }, [])
 
   
-  // ingresando informacion a firebase  
-  const startGroup = async() => {
-    console.log('start groups');
-    try {
-      setLoading(true);
-      const docRef = await addDoc(groupsCollectionRef, {
-        name: `Group #${Math.floor(Math.random() * 1000)}`,
-        description: 'This is a chat',
-        creator: userUid,
-        dateCreated: serverTimestamp(),
-      })
-      console.log("@@ Document written with ID: ", docRef.id);
-    } catch (error) {
-      console.log(error);
-    } finally {
-      setLoading(false);
-    }
-  }
-  
+  const getUsers = async() => {
+    setLoading(true);
+    // fetch users
+    const obtainQuery = query(usersRef, where('userId', '!=', userUid));
+    const querySnapshot = await getDocs(obtainQuery);
+    let dataObtain:(DocumentData) = [];
+    querySnapshot.forEach(doc => {
+      dataObtain.push({...doc.data()})
+    })
+    setUsers(dataObtain);
+    setLoading(false);
+  } 
+
   return (
     <View style={styles.container}>
-      <ScrollView>
-        <Spinner visible={loading}/>
-        {groups.map((groups) => (
-          <Link key={groups.id} href={`/(app)/groups/${groups.id}`} asChild>
-            <TouchableOpacity style={styles.groupCard}>
-              <Text>{groups.name}</Text>
-              <Text>{groups.description}</Text>
-            </TouchableOpacity>
-          </Link>
-        ))}
-      </ScrollView>
-      <Pressable style={styles.fab} onPress={startGroup}>
-        <Ionicons name='add' size={24} color={"white"} />
-      </Pressable>
+      <Spinner visible={loading}/>  
+      <ChatList users={users} />
+      {/* {groups.map((groups) => (
+        <Link key={groups.id} href={`/(app)/chat/groups/${groups.id}`} asChild>
+          <TouchableOpacity style={styles.groupCard}>
+            <Text>{groups.name}</Text>
+            <Text>{groups.description}</Text>
+          </TouchableOpacity>
+        </Link>
+      ))} */}
+
+    {/* <Pressable style={styles.fab} onPress={startGroup}>
+      <Ionicons name='add' size={24} color={"white"} />
+    </Pressable> */}
     </View>
   )
 }

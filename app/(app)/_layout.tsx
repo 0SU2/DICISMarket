@@ -1,4 +1,4 @@
-import { View, Text, Button, StyleSheet, useColorScheme } from 'react-native'
+import { View, Text, Button, StyleSheet, useColorScheme, TouchableOpacity } from 'react-native'
 import React from 'react'
 import { Tabs } from 'expo-router'
 import Ionicons from '@expo/vector-icons/Ionicons';
@@ -11,11 +11,33 @@ export default function LayoutApp() {
   const { signOut } = useAuth();
   return (
     <Drawer>
-      <Drawer.Screen name="profile" options={{ title: "Home" }}/>
+      <Drawer.Screen 
+        name="profile" 
+        options={{ 
+          title: "Home", 
+          headerRight: () => (
+            <TouchableOpacity style={styles.buttonLogout} onPress={signOut}>
+              <Ionicons name="exit-outline" size={20} color="black" />
+            </TouchableOpacity>
+          )
+        }}
+      />
       <Drawer.Screen name="chat" options={{ title: "Chat", headerShown: false }}/>
     </Drawer>
   )
 }
+
+const styles = StyleSheet.create({
+  buttonLogout: {
+    backgroundColor: '#f35656', 
+    alignItems: 'center', 
+    justifyContent: 'center' ,
+    width: 30, 
+    height: 30,
+    borderRadius: 10, 
+    margin: 10 
+  }
+})
 
 // dont delete yet
 // <Ionicons name="return-down-back-sharp" size={24} color={colorScheme === "dark" ? "black" : "white"} onPress={() => alert("yes")} style={[themeColorButtonIcon]}/>

@@ -1,0 +1,142 @@
+import { View, Text, KeyboardAvoidingView, FlatList, TextInput, StyleSheet, Platform, Button } from 'react-native';
+import * as React from 'react';
+import { useLocalSearchParams } from 'expo-router';
+import { DocumentData, addDoc, collection, doc, onSnapshot, orderBy, query, serverTimestamp, setDoc } from 'firebase/firestore';
+import ChatRoomHeader from '@/components/ChatRoomHeader';
+import { useAuth } from '@/context/AuthContext';
+import { FIRESTORE_DB } from '@/context/firebase/FirebaseConfig';
+
+const getRoomId = (userId1:string, userId2:string) => {
+  const sortedIds = [userId1, userId2].sort()
+  const roomId = sortedIds.join('-');
+  return roomId;
+}
+
+export default function chatRoom() {
+  const { getCurrentUserUid } = useAuth();
+
+  const item = useLocalSearchParams(); // second user
+  const userLogin = getCurrentUserUid(); // user logged
+  const [ messages, setMessages] = React.useState<DocumentData[]>([]);
+
+  const textRef = React.useRef('');
+  const inputRef = React.useRef(null);
+
+  React.useEffect(() => {
+    createRoomIfNotExists();
+    let roomId = getRoomId(userLogin, item?.userId);
+    const docRef = doc(FIRESTORE_DB, "rooms", roomId);
+    const messageRef = collection(docRef, "messages");
+    
+    const queryMessages = query(messageRef, orderBy("createAt", 'asc'));
+
+    let unsub = onSnapshot(queryMessages, (snapshot) => {
+      let allMessages = snapshot.docs.map(doc => {
+        return doc.data();
+      });
+      setMessages([...allMessages]);
+    })
+    
+    return unsub;
+  }, [])
+
+  const createRoomIfNotExists = async() => {
+    // roomId
+    let roomId = getRoomId(userLogin, item?.userId);
+    await setDoc(doc(FIRESTORE_DB, 'rooms', roomId), {
+      roomId,
+      createdAt: serverTimestamp(),
+    });
+  }
+
+  const sendMessage = async() => {
+    let message = textRef.current.trim();
+    if(!message) return;
+    try {
+      let roomId = getRoomId(userLogin, item?.userId);
+      const docRef = doc(FIRESTORE_DB, 'rooms', roomId);
+      const messagesRef = collection(docRef, "messages");
+      textRef.current = "";
+      const newDoc = await addDoc(messagesRef, {
+        userId: userLogin,
+        text: message,
+        createAt: serverTimestamp(),
+      })
+      console.log("new message id: ", newDoc.id);
+      
+    } catch (error) {
+      console.log("error => ", error);
+      
+    }
+  }
+
+  const renderMessages = ({item}:{item:DocumentData}) => {
+    const myMessages = item?.userId === userLogin;
+    return(
+      <View style={[styles.messageContainer, myMessages ? styles.userMessageContainer : styles.otherMessageContainer]}>
+        <Text style={styles.messageText}>{item.text}</Text>
+        <Text style={styles.time}>{item.createAt?.toDate().toLocaleDateString()}</Text>
+      </View>
+    )
+  }
+  
+  return (
+    <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === 'ios' ? 'padding' : 'height'} keyboardVerticalOffset={Platform.OS === 'android' ? 150 : 100}>
+      <View style={styles.container}>
+        <ChatRoomHeader user={item} />
+        <FlatList data={messages} keyExtractor={(item) => item.id} renderItem={renderMessages}/>
+        <View style={styles.inputContainer}>
+          <TextInput
+            placeholder='Escribe...'
+            ref={inputRef}
+            onChangeText={value => textRef.current = value}
+            style={styles.messageInput}
+          />
+          <Button title='Send' onPress={sendMessage}/>
+        </View>
+      </View>
+    </KeyboardAvoidingView>
+  )
+}
+
+const styles = StyleSheet.create({
+  container : {
+    flex: 1,
+  },
+  inputContainer: {
+    flexDirection: 'row',
+    padding: 10,
+    gap: 10,
+    backgroundColor: '#fff',
+  },
+  messageInput: {
+    flex: 1,
+    borderColor: '#ddd',
+    borderWidth: 1,
+    borderRadius: 10,
+    padding: 5,
+  },
+  messageContainer: {
+    padding: 10,
+    marginTop: 10,
+    marginHorizontal: 10,
+    borderRadius: 10,
+    maxWidth: '80%',
+  },
+  userMessageContainer: {
+    backgroundColor: '#dcf8c6',
+    alignSelf: 'flex-end',
+  },
+  otherMessageContainer: {
+    backgroundColor: '#fff',
+    alignSelf: 'flex-start'
+  },
+  messageText: {
+    fontSize: 16,
+  },
+  time: {
+    fontSize: 12,
+    color: '#777',
+  }
+
+})
