@@ -1,7 +1,5 @@
-
-import { View, Text, SafeAreaView, ScrollView, Platform, RefreshControl, StyleSheet, TouchableOpacity, Modal, TextInput } from 'react-native'
+import { View, Text, SafeAreaView, ScrollView, Platform, RefreshControl, StyleSheet, TouchableOpacity, Modal, TextInput, useColorScheme } from 'react-native'
 import React from 'react'
-import { createRandomThread, createRandomUser, generateThreads } from '@/utils/generate-dummy-data'
 import { Image } from 'expo-image';
 import { AntDesign } from '@expo/vector-icons';
 import { Ionicons } from '@expo/vector-icons';
@@ -29,10 +27,14 @@ export default function Posts({items}:TreathPost) {
   const [ userToMessage, setUserToMessage ] = React.useState<string>("");
   const userLogin = getCurrentUserUid();
 
+  const colorScheme = useColorScheme();
+  const themeStyleTextPost = colorScheme == "dark" ? styles.allPostColorTextBlack : styles.allPostColorTextWhite;
+  const themeStyleTheme = colorScheme == 'dark' ? styles.allPostBackgroundBlack : styles.allPostBackgroundWhite; 
+  const colorButtonMensajeModal = buttonSendMessage ? styles.modalButtonGray : styles.modalButtonGreen;
+  
   const blurhash =
   '|rF?hV%2WCj[ayj[a|j[az_NaeWBj@ayfRayfQfQM{M|azj[azf6fQfQfQIpWXofj[ayj[j[fQayWCoeoeaya}j[ayfQa{oLj?j[WVj[ayayj[fQoff7azayj[ayj[j[ayofayayayj[fQj[ayayj[ayfjj[j[ayjuayj[';
 
-  const colorButtonMensajeModal = buttonSendMessage ? styles.modalButtonGray : styles.modalButtonGreen;
 
   // mandar la informacion del usuario al que se quiere contactar
   const sendMessage = async() => {
@@ -95,7 +97,7 @@ export default function Posts({items}:TreathPost) {
 
 
   return (
-    <View style={styles.container}>
+    <View style={[ styles.container, themeStyleTheme ]}>
       <Spinner visible={loadingSpinner} />
       <Modal 
         visible={openModal} 
@@ -105,10 +107,10 @@ export default function Posts({items}:TreathPost) {
       >
 
         <View style={styles.modalContent}>
-          <View style={styles.modalCardContet}>
+          <View style={[styles.modalCardContet, themeStyleTheme]}>
             
-            <Text style={styles.modalContentTittle}>Mandar Propuesta A</Text>
-            <Text>{userToMessage}</Text>
+            <Text style={[styles.modalContentTittle, themeStyleTextPost]}>Mandar Propuesta A</Text>
+            <Text style={themeStyleTextPost}>{userToMessage}</Text>
             <View style={styles.modalInputContainer}>
               <TextInput
                 editable={editableSendMessageModal}
@@ -133,7 +135,7 @@ export default function Posts({items}:TreathPost) {
                 style={[styles.modalButton, { flexDirection: 'row' }, colorButtonMensajeModal]}
                 onPress={() => { sendMessage() }}
               >
-                <FontAwesome name="send" size={14} color="black" style={{ paddingRight: 10 }}/>
+                <FontAwesome name="send" size={14} color='black' style={{ paddingRight: 10 }}/>
                 <Text style={{ fontSize: 15 }}>Send</Text>
               </TouchableOpacity>
 
@@ -152,10 +154,10 @@ export default function Posts({items}:TreathPost) {
       />
       <View style={styles.mainContainer} id={items.id}>
         <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
-          <Text style={styles.userUsername}>{items.author.name}</Text>
-          <Text>{timeAgo(items.createdAt)}</Text>
+          <Text style={[styles.userUsername, themeStyleTextPost]}>{items.author.name}</Text>
+          <Text style={themeStyleTextPost}>{timeAgo(items.createdAt)}</Text>
         </View>
-        <Text style={styles.userContent}>{items.content}</Text>
+        <Text style={[styles.userContent, themeStyleTextPost]}>{items.content}</Text>
         <Image
           source={items.image}
           style={styles.userImageContet}
@@ -166,16 +168,16 @@ export default function Posts({items}:TreathPost) {
         <View style={{ flexDirection: 'row', paddingTop: 10 }}>
      
           <TouchableOpacity style={{ marginRight: 5 }} onPress={() => {}}>
-            <AntDesign name="like2" size={20} color="black" />
+            <AntDesign name="like2" size={20} color={colorScheme == "dark" ? "white" : "black" } />
           </TouchableOpacity>
 
-          <Text style={{ marginRight: 10 }}>{items.likesCount}</Text>
+          <Text style={[ themeStyleTextPost ,{ marginRight: 10 } ]}>{items.likesCount}</Text>
 
           <TouchableOpacity style={{ marginRight: 5 }} onPress={() => { setOpenModal(true); setUserToMessage(items.author.name) }}>
-            <Ionicons name="chatbubble-outline" size={20} color="black" />
+            <Ionicons name="chatbubble-outline" size={20} color={colorScheme == 'dark' ? "white" : "black"} />
           </TouchableOpacity>
 
-          <Text>{items.repliesCount}</Text>
+          <Text style={[ themeStyleTextPost ,{ marginRight: 10 } ]}>{items.repliesCount}</Text>
         
         </View>
       </View>
@@ -190,10 +192,9 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     paddingHorizontal: 12,
     paddingBottom: 10,
-    paddingTop: Platform.select({ android: 20 }),
-    borderBottomWidth: 0.5,
-    borderColor: 'lightgrey',
-    backgroundColor: 'white',
+    paddingTop: 15,
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderColor: '#3e3e3e',
   },
   imageProfile: {
     width: 50,
@@ -226,7 +227,6 @@ const styles = StyleSheet.create({
   modalCardContet: {
     width: '90%',
     padding: 20,
-    backgroundColor: 'white',
     borderRadius: 8,
     alignItems: 'center'
   },
@@ -245,12 +245,13 @@ const styles = StyleSheet.create({
   },
   modalInputContainer: {
     backgroundColor: '#c1c1c1',
+    color: 'black',
     width: '100%',
     borderRadius: 10,
     flexDirection: 'row',
     alignItems: 'center',
     borderWidth: 4,
-    borderColor: 'white',
+    borderColor: 'transparent',
     paddingStart: 5,
     marginTop: 10,
   },
@@ -260,5 +261,9 @@ const styles = StyleSheet.create({
     width: '98%'
   },
   modalButtonGray: { backgroundColor: '#747474' },
-  modalButtonGreen: { backgroundColor: 'green' }
+  modalButtonGreen: { backgroundColor: 'green' },
+  allPostBackgroundBlack: { backgroundColor: 'black' },
+  allPostBackgroundWhite: { backgroundColor: 'white' },
+  allPostColorTextBlack: { color: 'white' }, 
+  allPostColorTextWhite: { color: 'black' }
 })

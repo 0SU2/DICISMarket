@@ -30,8 +30,6 @@ export default function ProfileTab() {
       dataObtain.push({...doc.data()})
     })
     setUsers(dataObtain);
-    console.log(dataObtain);
-    
     setLoading(false);
   } 
 
@@ -39,14 +37,6 @@ export default function ProfileTab() {
     <View style={styles.container}>
       <Spinner visible={loading}/>  
       <ChatList users={users} />
-      {/* {groups.map((groups) => (
-        <Link key={groups.id} href={`/(app)/chat/groups/${groups.id}`} asChild>
-          <TouchableOpacity style={styles.groupCard}>
-            <Text>{groups.name}</Text>
-            <Text>{groups.description}</Text>
-          </TouchableOpacity>
-        </Link>
-      ))} */}
 
     {/* <Pressable style={styles.fab} onPress={startGroup}>
       <Ionicons name='add' size={24} color={"white"} />

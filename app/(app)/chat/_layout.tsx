@@ -1,6 +1,4 @@
-import { View, Text } from 'react-native'
 import React from 'react'
-import { Drawer } from 'expo-router/drawer'
 import { Tabs } from 'expo-router'
 import { Ionicons } from '@expo/vector-icons'
 

@@ -27,7 +27,8 @@ export default function RegisterTab() {
       return;
     }
     const response = await newLoginUser(email, password);
-    
+    console.log(response.success);
+       
     if(!response.success) {
       Alert.alert("Error", response.msg);
       setLoading(false);
@@ -35,6 +36,7 @@ export default function RegisterTab() {
     }
 
     const firestoreResponse = await userDataFirestore(response.msg.uid);
+    console.log(firestoreResponse);
     
     signIn(response.msg.uid, firestoreResponse);
     setLoading(false);

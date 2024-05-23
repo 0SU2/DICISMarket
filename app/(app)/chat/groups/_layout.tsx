@@ -14,7 +14,7 @@ export default function LayoutGroupChats() {
         }}  
       />
       <Stack.Screen 
-        name='[id]' 
+        name='chatRoom'
         options={{
           headerTitle: "Chat"
         }}

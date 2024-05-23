@@ -16,7 +16,7 @@ export default function ChatRoomHeader({user}:{user:object}) {
         headerShadowVisible: false,
         headerLeft: () => (
           <View style={{flex:1,flexDirection: 'row', alignItems: 'center', backgroundColor: '#fff'}}>
-            <TouchableOpacity onPress={() => router.back()}>
+            <TouchableOpacity style={{ padding: 12 }} onPress={() => router.back()}>
               <Octicons name="chevron-left" size={24} color="black" />
             </TouchableOpacity>
             <View style={{ alignItems: 'center'}}>

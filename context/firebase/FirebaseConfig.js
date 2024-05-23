@@ -7,16 +7,11 @@ import { setDoc, doc } from 'firebase/firestore'
 
 // env variables para la configuracion de firebase, debes agregarlas en tu archivo .env con los nombres que se indican
 // esto para mayor seguridad
-import { API_KEY, AUTHDOMAIN, PROYECTID, STORAGEBUCKET, MESSAGINGSENDERID, APPID, MEASUREMENTID } from '@env'
+// import { API_KEY, AUTHDOMAIN, PROYECTID, STORAGEBUCKET, MESSAGINGSENDERID, APPID, MEASUREMENTID } from '@env'
 
 const firebaseConfig = {
-  apiKey: API_KEY,
-  authDomain: AUTHDOMAIN,
-  projectId: PROYECTID,
-  storageBucket: STORAGEBUCKET,
-  messagingSenderId: MESSAGINGSENDERID,
-  appId: APPID,
-  measurementId: MEASUREMENTID,
+
+
 };
 
 // Inicializar firebase, previene que se reinicie en caso de que la pagina recargue
@@ -29,6 +24,7 @@ if (!getApps().length) {
     auth = initializeAuth(app, {
       persistence: getReactNativePersistence(AsyncStorage),
     });
+    console.log("Iniciando firebase");
   } catch (error) {
     console.log("@@ Error de inicialización " + error);
   }
@@ -70,6 +66,7 @@ const newLoginUser = async(email, password) => {
 
 // Mandar la informacion del usuario de firestore
 const userDataFirestore = async(userUID) => {
+  console.log(userUID);
   try {
     const docRef = doc(FIRESTORE_DB, 'users', userUID);
     const docSnap = await getDoc(docRef);
