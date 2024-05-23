@@ -12,7 +12,7 @@ export default function LayoutApp() {
   return (
     <Drawer>
       <Drawer.Screen 
-        name="profile" 
+        name="home" 
         options={{ 
           title: "Home", 
           headerRight: () => (
@@ -22,7 +22,13 @@ export default function LayoutApp() {
           )
         }}
       />
-      <Drawer.Screen name="chat" options={{ title: "Chat", headerShown: false }}/>
+      <Drawer.Screen 
+        name="chat" 
+        options={{ 
+          title: "Chat", 
+          headerShown: false 
+        }}
+      />
     </Drawer>
   )
 }

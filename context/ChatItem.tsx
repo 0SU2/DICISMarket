@@ -3,8 +3,16 @@ import React from 'react'
 import { TouchableOpacity } from 'react-native-gesture-handler'
 import { Image } from 'expo-image'
 import { router } from 'expo-router'
+import { getRoomId } from '@/utils/generate-id-room'
+import { FIRESTORE_DB } from './firebase/FirebaseConfig'
+import { DocumentData, collection, doc, onSnapshot, orderBy, query } from 'firebase/firestore'
+import { useAuth } from './AuthContext'
 
 export default function ChatItem({item, index}: {item:never}) {
+  const { getCurrentUserUid } = useAuth();
+  const userLogin = getCurrentUserUid(); // user logged
+  const [ lastMessage, setLastMessage ] = React.useState<DocumentData[]>(null);
+
   const blurhash =
   '|rF?hV%2WCj[ayj[a|j[az_NaeWBj@ayfRayfQfQM{M|azj[azf6fQfQfQIpWXofj[ayj[j[fQayWCoeoeaya}j[ayfQa{oLj?j[WVj[ayayj[fQoff7azayj[ayj[j[ayofayayayj[fQj[ayayj[ayfjj[j[ayjuayj[';
 
@@ -12,6 +20,33 @@ export default function ChatItem({item, index}: {item:never}) {
     router.push({pathname: '/(app)/chat/groups/chatRoom', params: item})
   }
 
+  React.useEffect(() => {
+    let roomId = getRoomId(userLogin, item?.userId);
+    const docRef = doc(FIRESTORE_DB, "rooms", roomId);
+    const messageRef = collection(docRef, "messages");
+    
+    const queryMessages = query(messageRef, orderBy("createAt", 'desc'));
+
+    let unsub = onSnapshot(queryMessages, (snapshot) => {
+      let allMessages = snapshot.docs.map(doc => {
+        return doc.data();
+      });
+      setLastMessage(allMessages[0]? allMessages[0]: null);
+    })
+    
+    return unsub;
+  }, []);
+
+  const renderLastImage = () => {
+    if(typeof lastMessage == null) return 'Loading...';
+    if(lastMessage) {
+      if(userLogin == lastMessage?.userId) return "You: "+lastMessage.text;
+      return lastMessage?.text
+    } else {
+      return "Yes"
+    }
+  }
+  
   return (
     <TouchableOpacity onPress={openChatRoom} style={styles.groupCard}>
 
@@ -30,7 +65,7 @@ export default function ChatItem({item, index}: {item:never}) {
         <View style={styles.userNameProfileName}>
           <Text style={{fontWeight: 'bold', fontSize: 20}}>{item?.username}</Text>
         </View>
-        <Text style={{fontWeight: '300', fontSize: 14}}>{index}</Text>
+        <Text style={{fontWeight: '300', fontSize: 14}}>{renderLastImage()}</Text>
       </View>
 
 

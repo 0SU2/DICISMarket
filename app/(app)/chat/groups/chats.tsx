@@ -30,6 +30,8 @@ export default function ProfileTab() {
       dataObtain.push({...doc.data()})
     })
     setUsers(dataObtain);
+    console.log(dataObtain);
+    
     setLoading(false);
   } 
 

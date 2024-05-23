@@ -27,7 +27,7 @@ export function AuthProvider({children}:React.PropsWithChildren) {
       router.replace("/(auth)/login")
     } else if (user && rootSegment !== "(app)") {
       router.push({
-        pathname: "/(app)/profile",
+        pathname: "/(app)/home",
       })
     } 
   }, [user, userUid, rootSegment]);

@@ -5,12 +5,7 @@ import { DocumentData, addDoc, collection, doc, onSnapshot, orderBy, query, serv
 import ChatRoomHeader from '@/components/ChatRoomHeader';
 import { useAuth } from '@/context/AuthContext';
 import { FIRESTORE_DB } from '@/context/firebase/FirebaseConfig';
-
-const getRoomId = (userId1:string, userId2:string) => {
-  const sortedIds = [userId1, userId2].sort()
-  const roomId = sortedIds.join('-');
-  return roomId;
-}
+import { getRoomId } from '@/utils/generate-id-room';
 
 export default function chatRoom() {
   const { getCurrentUserUid } = useAuth();
@@ -18,9 +13,10 @@ export default function chatRoom() {
   const item = useLocalSearchParams(); // second user
   const userLogin = getCurrentUserUid(); // user logged
   const [ messages, setMessages] = React.useState<DocumentData[]>([]);
-
-  const textRef = React.useRef('');
-  const inputRef = React.useRef(null);
+  
+  const [ textInput, setTextInput ] = React.useState<string>("");
+  const tixtRef = React.useRef('');
+  const inputRef = React.useRef('');
 
   React.useEffect(() => {
     createRoomIfNotExists();
@@ -50,13 +46,13 @@ export default function chatRoom() {
   }
 
   const sendMessage = async() => {
-    let message = textRef.current.trim();
+    let message = textInput.trim();
     if(!message) return;
     try {
       let roomId = getRoomId(userLogin, item?.userId);
       const docRef = doc(FIRESTORE_DB, 'rooms', roomId);
       const messagesRef = collection(docRef, "messages");
-      textRef.current = "";
+      setTextInput("");
       const newDoc = await addDoc(messagesRef, {
         userId: userLogin,
         text: message,
@@ -73,7 +69,7 @@ export default function chatRoom() {
   const renderMessages = ({item}:{item:DocumentData}) => {
     const myMessages = item?.userId === userLogin;
     return(
-      <View style={[styles.messageContainer, myMessages ? styles.userMessageContainer : styles.otherMessageContainer]}>
+      <View style={[styles.messageContainer, myMessages ? styles.userMessageContainer : styles.otherMessageContainer]} id={item?.userId}>
         <Text style={styles.messageText}>{item.text}</Text>
         <Text style={styles.time}>{item.createAt?.toDate().toLocaleDateString()}</Text>
       </View>
@@ -84,12 +80,16 @@ export default function chatRoom() {
     <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === 'ios' ? 'padding' : 'height'} keyboardVerticalOffset={Platform.OS === 'android' ? 150 : 100}>
       <View style={styles.container}>
         <ChatRoomHeader user={item} />
-        <FlatList data={messages} keyExtractor={(item) => item.id} renderItem={renderMessages}/>
+        <FlatList 
+          data={messages} 
+          keyExtractor={(item) => item.id} 
+          renderItem={renderMessages}
+        />
         <View style={styles.inputContainer}>
           <TextInput
             placeholder='Escribe...'
-            ref={inputRef}
-            onChangeText={value => textRef.current = value}
+            value={textInput}
+            onChangeText={value => setTextInput(value)}
             style={styles.messageInput}
           />
           <Button title='Send' onPress={sendMessage}/>
