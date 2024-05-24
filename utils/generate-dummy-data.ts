@@ -37,5 +37,5 @@ export function createRandomThread():Thread {
 }
 
 export function generateThreads(): Thread[] {
-  return new Array(40).fill(null).map((_) => createRandomThread());
+  return new Array(25).fill(null).map((_) => createRandomThread());
 }

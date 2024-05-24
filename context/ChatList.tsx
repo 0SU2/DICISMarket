@@ -4,8 +4,6 @@ import ChatItem from './ChatItem'
 import { DocumentData } from 'firebase/firestore'
 
 export default function ChatList({users}:{users:DocumentData}) {
-  console.log(users);
-  
   return (
     <SafeAreaView style={{flex:1}}>
       <FlatList
