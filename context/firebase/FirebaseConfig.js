@@ -79,7 +79,6 @@ const newLoginUser = async(email, password) => {
 
 // Mandar la informacion del usuario de firestore
 const userDataFirestore = async(userUID) => {
-  console.log(userUID);
   try {
     const docRef = doc(FIRESTORE_DB, 'users', userUID);
     const docSnap = await getDoc(docRef);
@@ -122,5 +121,6 @@ const newRegisterUser = async(email,password, username) => {
 
 export const usersRef = collection(FIRESTORE_DB, 'users');
 export const roomRef = collection(FIRESTORE_DB, 'rooms');
+export const publicacionesRef = collection(FIRESTORE_DB, 'publicacion')
 
 export { newLoginUser, newRegisterUser, FIRESTORE_DB , userDataFirestore };

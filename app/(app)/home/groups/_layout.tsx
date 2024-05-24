@@ -5,18 +5,17 @@ import { DrawerToggleButton } from '@react-navigation/drawer'
 
 export default function LayoutGroupChats() {
   return (
-    <Stack>
+    <Stack >
       <Stack.Screen 
         name='chats'
         options={{
-          headerTitle: "Chat Groups",
-          headerLeft: () => <DrawerToggleButton/>
+          headerShown: false,
         }}  
       />
       <Stack.Screen 
         name='chatRoom'
         options={{
-          headerTitle: "Chat"
+         
         }}
       />
     </Stack>

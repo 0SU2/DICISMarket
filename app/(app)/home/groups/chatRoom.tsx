@@ -1,4 +1,4 @@
-import { View, Text, KeyboardAvoidingView, FlatList, TextInput, StyleSheet, Platform, Button } from 'react-native';
+import { View, Text, KeyboardAvoidingView, FlatList, TextInput, StyleSheet, Platform, Button, TouchableOpacity } from 'react-native';
 import * as React from 'react';
 import { useLocalSearchParams } from 'expo-router';
 import { DocumentData, addDoc, collection, doc, onSnapshot, orderBy, query, serverTimestamp, setDoc } from 'firebase/firestore';
@@ -6,6 +6,7 @@ import ChatRoomHeader from '@/components/ChatRoomHeader';
 import { useAuth } from '@/context/AuthContext';
 import { FIRESTORE_DB } from '@/context/firebase/FirebaseConfig';
 import { getRoomId } from '@/utils/generate-id-room';
+import { Feather } from '@expo/vector-icons';
 
 export default function chatRoom() {
   const { getCurrentUserUid } = useAuth();
@@ -15,11 +16,10 @@ export default function chatRoom() {
   const [ messages, setMessages] = React.useState<DocumentData[]>([]);
   
   const [ textInput, setTextInput ] = React.useState<string>("");
-  const tixtRef = React.useRef('');
-  const inputRef = React.useRef('');
 
   React.useEffect(() => {
     createRoomIfNotExists();
+    
     let roomId = getRoomId(userLogin, item?.userId);
     const docRef = doc(FIRESTORE_DB, "rooms", roomId);
     const messageRef = collection(docRef, "messages");
@@ -69,7 +69,7 @@ export default function chatRoom() {
   const renderMessages = ({item}:{item:DocumentData}) => {
     const myMessages = item?.userId === userLogin;
     return(
-      <View style={[styles.messageContainer, myMessages ? styles.userMessageContainer : styles.otherMessageContainer]} id={item?.userId}>
+      <View style={[styles.messageContainer, myMessages ? styles.userMessageContainer : styles.otherMessageContainer]} key={item.userId}>
         <Text style={styles.messageText}>{item.text}</Text>
         <Text style={styles.time}>{item.createAt?.toDate().toLocaleDateString()}</Text>
       </View>
@@ -77,8 +77,8 @@ export default function chatRoom() {
   }
   
   return (
-    <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === 'ios' ? 'padding' : 'height'} keyboardVerticalOffset={Platform.OS === 'android' ? 150 : 100}>
-      <View style={styles.container}>
+    <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === 'ios' ? 'padding' : 'height'} keyboardVerticalOffset={Platform.OS === 'android' ? 210 : 200}>
+      <View style={styles.container} >
         <ChatRoomHeader user={item} />
         <FlatList 
           data={messages} 
@@ -92,10 +92,13 @@ export default function chatRoom() {
             onChangeText={value => setTextInput(value)}
             style={styles.messageInput}
           />
-          <Button title='Send' onPress={sendMessage}/>
+          <TouchableOpacity style={styles.buttonSend}>
+            <Feather name="send" size={24} color="white" />
+          </TouchableOpacity>
         </View>
       </View>
     </KeyboardAvoidingView>
+
   )
 }
 
@@ -137,6 +140,15 @@ const styles = StyleSheet.create({
   time: {
     fontSize: 12,
     color: '#777',
-  }
+  },
+  buttonSend: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 10,
+    paddingHorizontal: 10,
+    borderRadius: 30,
+    elevation: 3,
+    backgroundColor: 'black',
+  },
 
 })

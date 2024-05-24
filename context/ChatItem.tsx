@@ -16,10 +16,6 @@ export default function ChatItem({item, index}: {item:never}) {
   const blurhash =
   '|rF?hV%2WCj[ayj[a|j[az_NaeWBj@ayfRayfQfQM{M|azj[azf6fQfQfQIpWXofj[ayj[j[fQayWCoeoeaya}j[ayfQa{oLj?j[WVj[ayayj[fQoff7azayj[ayj[j[ayofayayayj[fQj[ayayj[ayfjj[j[ayjuayj[';
 
-  const openChatRoom = () => {
-    router.push({pathname: '/(app)/chat/groups/chatRoom', params: item})
-  }
-
   React.useEffect(() => {
     let roomId = getRoomId(userLogin, item?.userId);
     const docRef = doc(FIRESTORE_DB, "rooms", roomId);
@@ -43,24 +39,20 @@ export default function ChatItem({item, index}: {item:never}) {
       if(userLogin == lastMessage?.userId) return "You: "+lastMessage.text;
       return lastMessage?.text
     } else {
-      return "Yes"
+      return "..."
     }
   }
   
   return (
-    <TouchableOpacity onPress={openChatRoom} style={styles.groupCard}>
-
+    <View style={styles.groupCard} id={item?.userId}>
       <Image
         source={item?.profileUrl}
         style={styles.image}
         placeholder={{ blurhash }}
         contentFit='cover'
         contentPosition={'center'}
-        transition={500}
+        transition={200}
       />
-
-      {/* name and last message */}
-
       <View style={styles.userNameMessage}>
         <View style={styles.userNameProfileName}>
           <Text style={{fontWeight: 'bold', fontSize: 20}}>{item?.username}</Text>
@@ -68,8 +60,7 @@ export default function ChatItem({item, index}: {item:never}) {
         <Text style={{fontWeight: '300', fontSize: 14}}>{renderLastImage()}</Text>
       </View>
 
-
-    </TouchableOpacity>
+    </View>
   )
 }
 

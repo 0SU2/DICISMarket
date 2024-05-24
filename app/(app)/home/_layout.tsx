@@ -1,6 +1,7 @@
 import React from 'react'
 import { Tabs } from 'expo-router'
 import { Octicons } from '@expo/vector-icons';
+import { Ionicons } from '@expo/vector-icons';
 
 export default function LayoutIndex () {
   return (
@@ -14,6 +15,15 @@ export default function LayoutIndex () {
           headerShown: false,
           tabBarIcon: ({color}) =>
             <Octicons name="home" size={24} color={color} />
+        }}
+      />
+      <Tabs.Screen
+        name='groups'
+        options={{
+          title: 'Chats',
+          headerShown: false,
+          tabBarIcon: ({color}) => 
+            <Ionicons name="chatbubble" size={24} color={color} />
         }}
       />
       <Tabs.Screen 

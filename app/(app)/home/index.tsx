@@ -8,42 +8,62 @@ import Posts from '@/context/Posts';
 
 import { styles } from '@/styles';
 import { useAuth } from '@/context/AuthContext';
+import { DocumentData, getDocs, orderBy, query } from 'firebase/firestore';
+import { publicacionesRef } from '@/context/firebase/FirebaseConfig';
 
 export default function index() {
-  const { getCurrentUserUid, getCurrenUsername } = useAuth();
-  const { userName } = getCurrenUsername();
+  const { getCurrentUserUid, getCurrenUsername, getCurrentUser } = useAuth();
+  const { userName } = getCurrentUser();
   
   const [modalVisible, setModalVisible] = React.useState(false);
   const [userModalVisible, setUserModalVisible] = React.useState(false);
-  const [publications, setPublications] = React.useState([]);
+  const [publications, setPublications] = React.useState<DocumentData>([]);
   
   const [product, setProducto] = React.useState('');
   const [price, setPrecio] = React.useState('');
   const [description, setDescripcion] = React.useState('');
   const [category, setCategory] = React.useState('');
   const [availability, setAvailability] = React.useState('');
+
+  React.useEffect(() => {
+    const loadPublications = async () => {
+      const queryData = query(publicacionesRef, orderBy("createdAt", "desc"));
+      const querySnapShot = await getDocs(queryData);
+      
+      let dataObtain:(DocumentData) = [];
+      querySnapShot.forEach(doc => {
+        dataObtain.push({...doc.data()});
+      });
+      
+      setPublications(dataObtain);
+
+    };
+    loadPublications();
+  }, [userName]);
   
-  const formatDate = ({timestamp}:) => {
+  
+  const formatDate = ({timestamp}) => {
+    console.log(timestamp);
+    
     const date = new Date(timestamp);
     return date.toLocaleDateString();
   };
 
   const renderItem = ({ item }) => (
-    <View style={styles.publicationContainer}>
+    <View style={styles.publicationContainer} key={item.uidUser}>
       <Text style={styles.publicationHeader}>
-        {item.userName} - {item.division} - {formatDate(item.timestamp)}
+        {item.username} - {formatDate(item.createdAt)}
       </Text>
       <Text style={styles.publicationDetail}>Product: {item.product}</Text>
       <Text style={styles.publicationDetail}>Price: {item.price}</Text>
       <Text style={styles.publicationDetail}>Description: {item.description}</Text>
       <Text style={styles.publicationDetail}>Category: {item.category}</Text>
-      <Text style={styles.publicationDetail}>Availability: {item.availability}</Text>
+      <Text style={styles.publicationDetail}>Availability: {item.avilability ? "Disponible" : "Agotado"}</Text>
     </View>
   );
 
   return (
     <View style={styles.container}>
-      <Text>{`Welcomez ${userName}!`}</Text>
       <TouchableOpacity
         style={styles.buttonNewP}
         onPress={() => setModalVisible(true)}
@@ -109,30 +129,22 @@ export default function index() {
                 placeholderTextColor={'#9586A8'}
                 style={styles.input}
               />
-              <TouchableOpacity onPress={handleGuardarPublicacion} style={[styles.button, { backgroundColor: '#2D0C57' }]}>
+              {/* <TouchableOpacity onPress={handleGuardarPublicacion} style={[styles.button, { backgroundColor: '#2D0C57' }]}>
                 <Text style={{ fontSize: 17, fontWeight: '200', color: 'white' }}>SAVE</Text>
-              </TouchableOpacity>
+              </TouchableOpacity> */}
             </ScrollView>
           </View>
         </KeyboardAvoidingView>
       </Modal>
 
       {/* Publications List */}
-      <Text style={styles.header}>Publications from other users:</Text>
+      <Text style={styles.headerUsersPosts}>Publications from other users:</Text>
       <FlatList
         data={publications}
         renderItem={renderItem}
         keyExtractor={(item) => item.id}
         contentContainerStyle={styles.publicationsList}
       />
-
-      {/* Button for User Greeting */}
-      <TouchableOpacity
-        onPress={() => setUserModalVisible(true)}
-        style={{ position: 'absolute', top: 10, right: 20 }}
-      >
-        <AntDesign name="user" size={24} color="#2D0C57" />
-      </TouchableOpacity>
 
       
     </View>

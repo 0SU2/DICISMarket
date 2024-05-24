@@ -31,7 +31,7 @@ export default function ChatRoomHeader({user}:{user:object}) {
             </View>
             <Text style={styles.textChatUsername}>{user?.username}</Text>
           </View>
-        )
+        ),
       }}
     />
   )

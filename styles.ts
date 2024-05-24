@@ -13,7 +13,7 @@ export const styles = StyleSheet.create({
     },
     login: {
       width: 350,
-      height: 500,
+      height: 520,
       borderColor: '#fff',
       borderWidth: 2,
       borderRadius: 10,
@@ -22,7 +22,7 @@ export const styles = StyleSheet.create({
     },
     register: {
       width: 350,
-      height: 620,
+      height: 650,
       borderColor: '#fff',
       borderWidth: 2,
       borderRadius: 10,
@@ -43,7 +43,7 @@ export const styles = StyleSheet.create({
       borderRadius: 50,
       borderColor: '#fff',
       borderWidth: 1,
-      marginVertical: 20,
+      marginVertical: 12,
     },
     inputContainerLogin: {
       backgroundColor: '#ffffff90',
@@ -189,5 +189,9 @@ export const styles = StyleSheet.create({
     },
     publicationsList: {
       paddingHorizontal: 10,
+    },
+    headerUsersPosts: {
+      fontSize: 15,
+      fontWeight: '600'
     },
   });

@@ -6,7 +6,7 @@ import { Feather, Fontisto } from '@expo/vector-icons';
 import { Image } from 'expo-image';
 
 export default function ProfileTab() {
-  const { getCurrentUser, getCurrenUsername, getCurrentUserImage } =useAuth();
+  const { getCurrentUser, getCurrenUsername, getCurrentUserImage } = useAuth();
   const currentUser = getCurrentUser();
   const currentUsername = getCurrenUsername();
   const currentImage = getCurrentUserImage();

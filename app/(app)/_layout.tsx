@@ -1,35 +1,34 @@
 import { View, Text, Button, StyleSheet, useColorScheme, TouchableOpacity } from 'react-native'
 import React from 'react'
-import { Tabs } from 'expo-router'
+import { Stack } from 'expo-router'
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { useAuth } from '@/context/AuthContext';
-import { DrawerToggleButton } from '@react-navigation/drawer';
 import { Drawer } from 'expo-router/drawer';
+import { AntDesign } from '@expo/vector-icons';
 
 export default function LayoutApp() {
   const colorScheme = useColorScheme();
   const { signOut } = useAuth();
   return (
-    <Drawer>
-      <Drawer.Screen 
+    <Stack>
+      <Stack.Screen 
         name="home" 
         options={{ 
-          title: "Home", 
+          title: "MarketDicis", 
           headerRight: () => (
             <TouchableOpacity style={styles.buttonLogout} onPress={signOut}>
               <Ionicons name="exit-outline" size={20} color="black" />
             </TouchableOpacity>
+          ),
+          headerLeft: () => (
+            <TouchableOpacity style={{ padding: 10 }}>
+              <AntDesign name="shoppingcart" size={24} color="black" />
+            </TouchableOpacity>
           )
+
         }}
       />
-      <Drawer.Screen 
-        name="chat" 
-        options={{ 
-          title: "Chat", 
-          headerShown: false 
-        }}
-      />
-    </Drawer>
+    </Stack>
   )
 }
 

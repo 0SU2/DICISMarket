@@ -17,7 +17,7 @@ const profilePicture = 'https://external-content.duckduckgo.com/iu/?u=http%3A%2F
 export default function RegisterTab() {
   const { passwordVisibility, rightIcon, handlePasswordVisibility } = useTogglePasswordVisibility();
   const [ password, setPassword ] = React.useState<string>('123456');
-  const [ email, setEmail ] = React.useState<string>('osukar1910@gmail.com')
+  const [ email, setEmail ] = React.useState<string>('or@ugto.mx')
   const [loading, setLoading] = React.useState<boolean>(false);
   const { signIn } = useAuth()
 
@@ -34,7 +34,6 @@ export default function RegisterTab() {
       return;
     }
     const response = await newLoginUser(email, password);
-    console.log(response.success);
        
     if(!response.success) {
       Alert.alert("Error", response.msg);
@@ -43,7 +42,6 @@ export default function RegisterTab() {
     }
 
     const firestoreResponse = await userDataFirestore(response.msg.uid);
-    console.log(firestoreResponse);
     
     signIn(response.msg.uid, firestoreResponse);
     setLoading(false);
@@ -78,7 +76,7 @@ export default function RegisterTab() {
               style={styles.profilePicture}
               contentFit='cover'
               contentPosition={'center'}
-              transition={200}
+              transition={100}
             />
 
             <Text style={styles.textBienvenida}>Bienvenido!</Text>
@@ -89,6 +87,7 @@ export default function RegisterTab() {
               <TextInput 
                 autoCorrect={false}
                 autoCapitalize='none'
+                value={email}
                 onChangeText={(text) => setEmail(text)} 
                 style={styles.inputField} 
                 placeholder='Enter your Email' 
@@ -102,6 +101,7 @@ export default function RegisterTab() {
               <TextInput 
                 autoCorrect={false}
                 autoCapitalize="none"
+                value={password}
                 onChangeText={(text) => setPassword(text)} 
                 style={styles.inputField} 
                 enablesReturnKeyAutomatically
