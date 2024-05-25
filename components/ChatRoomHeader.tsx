@@ -15,8 +15,8 @@ export default function ChatRoomHeader({user}:{user:object}) {
         title: '',
         headerShadowVisible: false,
         headerLeft: () => (
-          <View style={{flex:1,flexDirection: 'row', alignItems: 'center', backgroundColor: '#fff'}}>
-            <TouchableOpacity style={{ padding: 12 }} onPress={() => router.back()}>
+          <View style={{ flexDirection: 'row', alignItems: 'center'}}>
+            <TouchableOpacity style={{ padding: 10 }} onPress={() => router.back()}>
               <Octicons name="chevron-left" size={24} color="black" />
             </TouchableOpacity>
             <View style={{ alignItems: 'center'}}>
@@ -40,8 +40,8 @@ export default function ChatRoomHeader({user}:{user:object}) {
 const styles = StyleSheet.create({
   image: {
     borderRadius: 85,
-    height: 40,
-    width: 40,
+    height: 35,
+    width: 35,
     margin: 5,
     marginLeft: 20
   },

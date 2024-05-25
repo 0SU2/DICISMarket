@@ -2,6 +2,7 @@ import React from 'react'
 import { Tabs } from 'expo-router'
 import { Octicons } from '@expo/vector-icons';
 import { Ionicons } from '@expo/vector-icons';
+import { FontAwesome5 } from '@expo/vector-icons';
 
 export default function LayoutIndex () {
   return (
@@ -14,7 +15,7 @@ export default function LayoutIndex () {
           title: 'Home',
           headerShown: false,
           tabBarIcon: ({color}) =>
-            <Octicons name="home" size={24} color={color} />
+            <FontAwesome5 name="home" size={24} color={color} />
         }}
       />
       <Tabs.Screen

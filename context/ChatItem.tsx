@@ -39,7 +39,7 @@ export default function ChatItem({item, index}: {item:never}) {
       if(userLogin == lastMessage?.userId) return "You: "+lastMessage.text;
       return lastMessage?.text
     } else {
-      return "..."
+      return "No messages..."
     }
   }
   

@@ -1,19 +1,21 @@
-import { View, Text, Button, StyleSheet, useColorScheme, TouchableOpacity } from 'react-native'
+import { StyleSheet, TouchableOpacity } from 'react-native'
 import React from 'react'
 import { Stack } from 'expo-router'
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { useAuth } from '@/context/AuthContext';
-import { Drawer } from 'expo-router/drawer';
 import { AntDesign } from '@expo/vector-icons';
 
 export default function LayoutApp() {
-  const colorScheme = useColorScheme();
   const { signOut } = useAuth();
   return (
     <Stack>
       <Stack.Screen 
         name="home" 
         options={{ 
+          headerTintColor: '#fff',
+          headerStyle: {
+            backgroundColor: '#2D0C57'
+          },
           title: "MarketDicis", 
           headerRight: () => (
             <TouchableOpacity style={styles.buttonLogout} onPress={signOut}>
@@ -22,7 +24,7 @@ export default function LayoutApp() {
           ),
           headerLeft: () => (
             <TouchableOpacity style={{ padding: 10 }}>
-              <AntDesign name="shoppingcart" size={24} color="black" />
+              <AntDesign name="shoppingcart" size={24} color="white" />
             </TouchableOpacity>
           )
 

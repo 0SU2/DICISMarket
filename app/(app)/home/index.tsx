@@ -8,22 +8,26 @@ import Posts from '@/context/Posts';
 
 import { styles } from '@/styles';
 import { useAuth } from '@/context/AuthContext';
-import { DocumentData, getDocs, orderBy, query } from 'firebase/firestore';
-import { publicacionesRef } from '@/context/firebase/FirebaseConfig';
+import { DocumentData, addDoc, collection, getDocs, orderBy, query, serverTimestamp } from 'firebase/firestore';
+import { FIRESTORE_DB, publicacionesRef } from '@/context/firebase/FirebaseConfig';
+import SelectDropdown from 'react-native-select-dropdown';
+
+import { listAvilability, listCategory } from '@/utils/category-list';
 
 export default function index() {
   const { getCurrentUserUid, getCurrenUsername, getCurrentUser } = useAuth();
   const { userName } = getCurrentUser();
+  const { userUid } = getCurrentUserUid()
   
   const [modalVisible, setModalVisible] = React.useState(false);
   const [userModalVisible, setUserModalVisible] = React.useState(false);
   const [publications, setPublications] = React.useState<DocumentData>([]);
   
-  const [product, setProducto] = React.useState('');
-  const [price, setPrecio] = React.useState('');
-  const [description, setDescripcion] = React.useState('');
-  const [category, setCategory] = React.useState('');
-  const [availability, setAvailability] = React.useState('');
+  const [product, setProducto] = React.useState<string>('');
+  const [price, setPrecio] = React.useState<string>('');
+  const [description, setDescripcion] = React.useState<string>('');
+  const [category, setCategory] = React.useState<string>('');
+  const [availability, setAvailability] = React.useState<boolean>();
 
   React.useEffect(() => {
     const loadPublications = async () => {
@@ -34,17 +38,40 @@ export default function index() {
       querySnapShot.forEach(doc => {
         dataObtain.push({...doc.data()});
       });
-      
+
       setPublications(dataObtain);
 
     };
     loadPublications();
   }, [userName]);
+
+  const closeModal = () => {
+    setModalVisible(false);
+    setProducto("");
+    setPrecio('');
+    setDescripcion('');
+    setCategory('');
+    setAvailability(false);
+  }
   
+  const handleGuardarPublicacion = async() => {
+    try {
+      const publicacionRef = await addDoc(collection(FIRESTORE_DB, 'publicaciones'), {
+        availability,
+        category,
+        createdAt: serverTimestamp(),
+        description,
+        price,
+        product,
+        uidUser: 
+      })
+    } catch (error) {
+      console.log(error);
+      
+    }
+  }
   
   const formatDate = ({timestamp}) => {
-    console.log(timestamp);
-    
     const date = new Date(timestamp);
     return date.toLocaleDateString();
   };
@@ -76,7 +103,6 @@ export default function index() {
         animationType="slide"
         transparent={true}
         visible={modalVisible}
-        onRequestClose={() => setModalVisible(false)}
       >
         <KeyboardAvoidingView
           behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
@@ -86,7 +112,7 @@ export default function index() {
           <View style={[styles.modalView, { flex: 1 }]}>
             <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
               <TouchableOpacity
-                onPress={() => setModalVisible(false)}
+                onPress={() => closeModal()}
                 style={{ position: 'absolute', top: -6, right: 0, zIndex: 1 }}
               >
                 <AntDesign name="close" size={24} color="black" />
@@ -102,7 +128,7 @@ export default function index() {
               <TextInput
                 value={price}
                 onChangeText={setPrecio}
-                placeholder="Price"
+                placeholder="Precio"
                 placeholderTextColor={'#9586A8'}
                 style={styles.input}
                 keyboardType="numeric"
@@ -115,20 +141,68 @@ export default function index() {
                 style={[styles.input, { height: 100 }]}
                 multiline
               />
-              <TextInput
-                value={category}
-                onChangeText={setCategory}
-                placeholder="Category"
-                placeholderTextColor={'#9586A8'}
-                style={styles.input}
+
+              <SelectDropdown
+                data={listCategory}
+                onSelect={(selected) => {
+                  setCategory(selected.title);
+                }}
+                renderButton={(selectedItem, isOpen) => {
+                  return (
+                    <View style={styles.dropdownButtonStyle}>
+                      <Text style={styles.dropdownButtonTxtStyle}>
+                        {(selectedItem && selectedItem.title) || 'Categoria'}
+                      </Text>
+                      <AntDesign name={isOpen ? "up": "down" } size={14} color="black" />
+                    </View>
+                  );
+                }}
+                renderItem={(item, isSelected) => {
+                  return (
+                    <View
+                      style={{
+                        ...styles.dropdownItemStyle,
+                        ...(isSelected && {backgroundColor: '#D2D9DF'}),
+                      }}>
+                      <Text style={styles.dropdownItemTxtStyle}>{item.title}</Text>
+                    </View>
+                  );
+                }}
+                showsVerticalScrollIndicator={true}
+                dropdownStyle={styles.dropdownMenuStyle}
               />
-              <TextInput
-                value={availability}
-                onChangeText={setAvailability}
-                placeholder="Product availability"
-                placeholderTextColor={'#9586A8'}
-                style={styles.input}
+ 
+              <SelectDropdown
+                data={listAvilability}
+                onSelect={(selected) => {
+                  setAvailability(selected.title.includes("Disponible"));
+                  console.log(availability);
+                }}
+                renderButton={(selectedItem, isOpen) => {
+                  return (
+                    <View style={styles.dropdownButtonStyle}>
+                      <Text style={styles.dropdownButtonTxtStyle}>
+                        {(selectedItem && selectedItem.title) || 'Disponibilidad'}
+                      </Text>
+                      <AntDesign name={isOpen ? "up": "down" } size={14} color="black" />
+                    </View>
+                  );
+                }}
+                renderItem={(item, isSelected) => {
+                  return (
+                    <View
+                      style={{
+                        ...styles.dropdownItemStyle,
+                        ...(isSelected && {backgroundColor: '#D2D9DF'}),
+                      }}>
+                      <Text style={styles.dropdownItemTxtStyle}>{item.title}</Text>
+                    </View>
+                  );
+                }}
+                showsVerticalScrollIndicator={false}
+                dropdownStyle={styles.dropdownAvalibilityStyle}
               />
+
               {/* <TouchableOpacity onPress={handleGuardarPublicacion} style={[styles.button, { backgroundColor: '#2D0C57' }]}>
                 <Text style={{ fontSize: 17, fontWeight: '200', color: 'white' }}>SAVE</Text>
               </TouchableOpacity> */}

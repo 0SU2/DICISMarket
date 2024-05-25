@@ -92,8 +92,8 @@ export default function chatRoom() {
             onChangeText={value => setTextInput(value)}
             style={styles.messageInput}
           />
-          <TouchableOpacity style={styles.buttonSend}>
-            <Feather name="send" size={24} color="white" />
+          <TouchableOpacity style={styles.buttonSend} onPress={sendMessage}>
+            <Feather name="send" size={24} color="blue" />
           </TouchableOpacity>
         </View>
       </View>
@@ -148,7 +148,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     borderRadius: 30,
     elevation: 3,
-    backgroundColor: 'black',
+    backgroundColor: 'white',
   },
 
 })

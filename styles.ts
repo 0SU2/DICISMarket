@@ -171,6 +171,7 @@ export const styles = StyleSheet.create({
       textAlign: 'center',
     },
     publicationContainer: {
+      width: 300,
       backgroundColor: '#EDEDED',
       padding: 10,
       marginBottom: 20,
@@ -194,4 +195,66 @@ export const styles = StyleSheet.create({
       fontSize: 15,
       fontWeight: '600'
     },
-  });
+  headerTxt: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#151E26',
+  },
+  dropdownButtonStyle: {
+    width: 250,
+    height: 40,
+    backgroundColor: '#ffffff90',
+    borderColor: 'white',
+    borderRadius: 10,
+    borderWidth: 2,
+    padding: 10,
+    marginVertical: 10,
+    marginBottom: 20,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  dropdownButtonTxtStyle: {
+    flex: 1,
+    fontSize: 12,
+    fontWeight: '500',
+    color: '#151E26',
+  },
+  dropdownButtonArrowStyle: {
+    fontSize: 28,
+  },
+  dropdownButtonIconStyle: {
+    fontSize: 28,
+    marginRight: 8,
+  },
+  dropdownMenuStyle: {
+    backgroundColor: '#E9ECEF',
+    borderRadius: 8,
+    height: 200,
+  },
+  dropdownAvalibilityStyle: {
+    backgroundColor: '#E9ECEF',
+    borderRadius: 8,
+    height: 80,
+  },
+  dropdownItemStyle: {
+    width: '100%',
+    flexDirection: 'row',
+    paddingHorizontal: 12,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingVertical: 8,
+  },
+  dropdownItemTxtStyle: {
+    flex: 1,
+    fontSize: 18,
+    fontWeight: '500',
+    color: '#151E26',
+    marginVertical: 4,
+  },
+  dropdownItemIconStyle: {
+    fontSize: 28,
+    marginRight: 8,
+  },
+
+});
