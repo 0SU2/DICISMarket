@@ -1,7 +1,7 @@
 import { View, StyleSheet, FlatList, Pressable } from 'react-native'
 import * as React from 'react'
 import { roomRef, usersRef } from '@/context/firebase/FirebaseConfig'
-import { DocumentData, getDoc, getDocs, or, query, queryEqual, where } from 'firebase/firestore'
+import { DocumentData, getDoc, getDocs, onSnapshot, or, query, queryEqual, where } from 'firebase/firestore'
 import { useAuth } from '@/context/AuthContext'
 import Spinner from 'react-native-loading-spinner-overlay'
 import ChatItem from '@/context/ChatItem'
@@ -12,43 +12,20 @@ export default function ProfileTab() {
   const [ users, setUsers ] = React.useState<Array<DocumentData>>([]);
   const [ loading, setLoading ] = React.useState(false);
   const { getCurrentUserUid } = useAuth();
-  const userUid = getCurrentUserUid();
 
   React.useEffect(() => {
-    const getUsers = async() => {
-      setLoading(true);
-      // fetch users
-      const obtainQueryUsers = query(usersRef, where("userId", "!=", userUid));
-      // const obtainQueryRooms = query(roomRef, or(where('idUser1', '==', userUid), where('idUser2', '==', userUid)));
-      
-      // const querySnpashotRooms = await getDocs(obtainQueryRooms);
-      const querySnapsShotUsers = await getDocs(obtainQueryUsers);
-      let queryDataObtain:(DocumentData) = [];
-      querySnapsShotUsers.forEach(doc => {
-        queryDataObtain.push({...doc.data()})
+    setLoading(true)
+    const usersMessages = query(usersRef, where("userId", "!=" , getCurrentUserUid()));
+    let unsub = onSnapshot(usersMessages, (snapshot) => {
+      let allMessages = snapshot.docs.map(doc => {
+        return {...doc.data()}
       })
-      // let dataObtainRooms:(DocumentData) = [];
-      // querySnpashotRooms.forEach(doc => {
-      //   dataObtainRooms.push({...doc.data()})
-      // })
-      
-      // let dataUsers:(DocumentData) = [];
-      // for (const doc of dataObtainRooms) {
-      //   const queryData = query(usersRef, where('userId', '==', doc.idUser2));
-      //   const querySnapShot = await getDocs(queryData);
-      //   querySnapShot.forEach(doc => {
-      //     dataUsers.push({...doc.data()});
-      //   })
-      // }
-
-      setUsers(queryDataObtain)
-      setLoading(false);
-    } 
-    // return unsuscribe;
-    getUsers();
+      setUsers(allMessages);
+    })
+    setLoading(false);
+    return unsub;
     
   }, [])
-
 
 
   return (
@@ -58,11 +35,11 @@ export default function ProfileTab() {
       <FlatList
         data={users}
         showsVerticalScrollIndicator={false}
-        renderItem={({item, index}) => 
-          <Pressable onPress={()=> router.push({pathname: '/(app)/home/groups/chatRoom', params: item})}>
+        renderItem={({item}) => 
+          <Pressable onHoverIn={() => console.log('hover')
+          } onPress={()=> router.push({pathname: '/(app)/home/groups/chatRoom', params: item})}>
             <ChatItem 
               item={item} 
-              index={index}
             />
           </Pressable>
         }

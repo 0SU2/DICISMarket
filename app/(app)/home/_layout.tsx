@@ -10,7 +10,7 @@ export default function LayoutIndex () {
       tabBarActiveTintColor: 'blue',
     }}>
       <Tabs.Screen
-        name='index'
+        name='posts'
         options={{
           title: 'Home',
           headerShown: false,

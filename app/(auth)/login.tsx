@@ -41,9 +41,12 @@ export default function RegisterTab() {
       return;
     }
 
-    const firestoreResponse = await userDataFirestore(response.msg.uid);
+    signIn(response.msg)
+
+    // const firestoreResponse = await userDataFirestore(response.msg.uid);
     
-    signIn(response.msg.uid, firestoreResponse);
+    // console.log(firestoreResponse);
+    
     setLoading(false);
     return;
   }

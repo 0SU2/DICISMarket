@@ -28,7 +28,7 @@ export default function chatRoom() {
 
     let unsub = onSnapshot(queryMessages, (snapshot) => {
       let allMessages = snapshot.docs.map(doc => {
-        return doc.data();
+        return {...doc.data(), id: doc.id};
       });
       setMessages([...allMessages]);
     })
@@ -69,7 +69,7 @@ export default function chatRoom() {
   const renderMessages = ({item}:{item:DocumentData}) => {
     const myMessages = item?.userId === userLogin;
     return(
-      <View style={[styles.messageContainer, myMessages ? styles.userMessageContainer : styles.otherMessageContainer]} key={item.userId}>
+      <View style={[styles.messageContainer, myMessages ? styles.userMessageContainer : styles.otherMessageContainer]} key={item.id}>
         <Text style={styles.messageText}>{item.text}</Text>
         <Text style={styles.time}>{item.createAt?.toDate().toLocaleDateString()}</Text>
       </View>

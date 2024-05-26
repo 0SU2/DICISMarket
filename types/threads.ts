@@ -27,3 +27,15 @@ export interface User {
   photo: string;
   link?: string;
 }
+
+export interface MyDocument {
+  email: string;
+  userId: string;
+  profileUrl: string;
+  username: string;
+}
+
+export interface iconsToggle {
+  passwordVisibility: boolean;
+  myRightIcon: 'eye-off';
+}

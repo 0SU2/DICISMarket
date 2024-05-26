@@ -1,5 +1,7 @@
 import * as React from 'react'
 
+import { iconsToggle } from '@/types/threads';
+
 export const useTogglePasswordVisibility = () => {
   const [passwordVisibility, setPasswordVisibility] = React.useState(true);
   const [rightIcon, setRightIcon] = React.useState<string>('eye');

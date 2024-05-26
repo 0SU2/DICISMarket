@@ -1,3 +1,4 @@
+import { MyDocument } from '@/types/threads';
 import { useRouter, useSegments } from 'expo-router';
 import * as React from 'react';
 
@@ -16,6 +17,7 @@ export function AuthProvider({children}:React.PropsWithChildren) {
   const [userUid, setUserUid] = React.useState<string>("");
   const [username, setUsername] = React.useState<string>("");
   const [userImg, setUserImg] = React.useState<string>("");
+  const [ userData, setUserData ] = React.useState<MyDocument>();
 
   // usar un useEffect para revisar si tenemos un usuario al cargar la pagina por primera vez
   React.useEffect(() => {
@@ -27,18 +29,18 @@ export function AuthProvider({children}:React.PropsWithChildren) {
       router.replace("/(auth)/login")
     } else if (user && rootSegment !== "(app)") {
       router.push({
-        pathname: "/(app)/home",
+        pathname: "/(app)/home/posts",
       })
     } 
-  }, [user, userUid, rootSegment]);
+  }, [user, userUid, rootSegment, user, username, userImg]);
  
   return(
     <AuthContext.Provider
       value={{
         user: user,
-        signIn: (userUid:string, userFirestore:object) => {
+        signIn: (userFirestore:MyDocument) => {
           setUser(userFirestore.email);
-          setUserUid(userUid);
+          setUserUid(userFirestore.userId);
           setUserImg(userFirestore.profileUrl);
           setUsername(userFirestore.username);
         },

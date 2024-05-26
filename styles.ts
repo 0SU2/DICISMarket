@@ -130,7 +130,7 @@ export const styles = StyleSheet.create({
       alignItems: 'center',
     },
     buttonNewP:{
-      width: 200,
+      width: 150,
       height: 40,
       borderRadius: 10,
       alignItems: 'center',
@@ -138,7 +138,9 @@ export const styles = StyleSheet.create({
       marginVertical: 10,
       borderColor: '#fff',
       borderWidth: 1,
-      backgroundColor: '#918D96'
+      backgroundColor: '#918D96',
+      marginRight: 8,
+      flexDirection: 'row'
     },
     containerTAB: {
       flex: 1,
@@ -171,7 +173,7 @@ export const styles = StyleSheet.create({
       textAlign: 'center',
     },
     publicationContainer: {
-      width: 300,
+      width: 370,
       backgroundColor: '#EDEDED',
       padding: 10,
       marginBottom: 20,
@@ -256,5 +258,37 @@ export const styles = StyleSheet.create({
     fontSize: 28,
     marginRight: 8,
   },
-
+  dropdownIndex: {
+      width: 150,
+      height: 40,
+      borderRadius: 10,
+      alignItems: 'center',
+      justifyContent: 'center',
+      marginVertical: 10,
+      borderColor: '#fff',
+      borderWidth: 1,
+      backgroundColor: '#918D96',
+      marginRight: 8,
+      flexDirection: 'row'
+  },
+    inputSelect: {
+      width: '98%',
+      padding: 0,
+      marginVertical: 4,
+      borderColor: '#9586A8',
+      borderWidth: 1,
+      borderRadius: 5,
+      backgroundColor: '#ffffff90',
+      color: '#9586A8'
+    },
+    inputbarra: {
+      width: 270,
+      height: 40,
+      borderColor: '#fff',
+      borderWidth: 2,
+      borderRadius: 10,
+      padding: 10,
+      marginVertical: 10,
+      backgroundColor: '#ffffff90',
+    },
 });

@@ -2,8 +2,9 @@
 import { getApp, getApps, initializeApp } from 'firebase/app';
 import { initializeAuth, getReactNativePersistence ,createUserWithEmailAndPassword, signInWithEmailAndPassword, sendPasswordResetEmail, getAuth } from 'firebase/auth';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { collection, getDoc, getFirestore } from 'firebase/firestore';
+import { collection, getDoc, getDocs, getFirestore } from 'firebase/firestore';
 import { setDoc, doc } from 'firebase/firestore'
+
 
 // env variables para la configuracion de firebase, debes agregarlas en tu archivo .env con los nombres que se indican
 // esto para mayor seguridad
@@ -53,7 +54,12 @@ const newLoginUser = async(email, password) => {
   console.log("Iniciando sesion...");
   try {
     const response = await signInWithEmailAndPassword(auth, email, password);
-    return { success: true, msg: response?.user }
+    const docRef = doc(FIRESTORE_DB, 'users', response.user.uid);
+    const docSnap = await getDoc(docRef);
+    if(docSnap.exists) {
+      console.log(typeof docSnap.data());
+    }
+    return { success: true, msg: docSnap.data() }
   } catch (error) {
     let newMessage;
     switch (error.message) {
@@ -81,9 +87,12 @@ const newLoginUser = async(email, password) => {
 const userDataFirestore = async(userUID) => {
   try {
     const docRef = doc(FIRESTORE_DB, 'users', userUID);
-    const docSnap = await getDoc(docRef);
-    const dataFirestore = docSnap.data()
-    return dataFirestore
+    const docSnap = await getDocs(docRef);
+    let myData = {}
+    docSnap.forEach(doc => {
+      myData.push({...doc.data()})
+    })
+    return { success: true, msg: myData }
   } catch (error) {
     console.log(error);
   }

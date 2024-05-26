@@ -19,12 +19,7 @@ const profilePicture = 'https://external-content.duckduckgo.com/iu/?u=http%3A%2F
 export default function RegisterTab() {
   const { passwordVisibility, rightIcon, handlePasswordVisibility } = useTogglePasswordVisibility();
   const [ loading, setLoading ] = React.useState<boolean>(false);
-  const emailRef = React.useRef("");
-  const usernameRef = React.useRef("");
-  const passwordRef = React.useRef("");
-  const confirmPasswordRef = React.useRef("");
-  const profileUrl = React.useRef("");
-  
+
   const { signIn } = useAuth();
 
     // valores que recibe del registro

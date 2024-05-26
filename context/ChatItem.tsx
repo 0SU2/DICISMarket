@@ -8,11 +8,11 @@ import { FIRESTORE_DB } from './firebase/FirebaseConfig'
 import { DocumentData, collection, doc, onSnapshot, orderBy, query } from 'firebase/firestore'
 import { useAuth } from './AuthContext'
 
-export default function ChatItem({item, index}: {item:never}) {
+export default function ChatItem({item}: {item:DocumentData}) {
   const { getCurrentUserUid } = useAuth();
   const userLogin = getCurrentUserUid(); // user logged
   const [ lastMessage, setLastMessage ] = React.useState<DocumentData[]>(null);
-
+  
   const blurhash =
   '|rF?hV%2WCj[ayj[a|j[az_NaeWBj@ayfRayfQfQM{M|azj[azf6fQfQfQIpWXofj[ayj[j[fQayWCoeoeaya}j[ayfQa{oLj?j[WVj[ayayj[fQoff7azayj[ayj[j[ayofayayayj[fQj[ayayj[ayfjj[j[ayjuayj[';
 
@@ -70,7 +70,6 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     paddingLeft: 10,
     marginTop: 10,
-    elevation: 4,
     flexDirection: 'row'
   },
   image: {
